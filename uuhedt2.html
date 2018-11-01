@@ -1,0 +1,159 @@
+<html>
+<head>
+<title>uuHEdt</title>
+<link rel="stylesheet" href="../ftab/ftab.css">
+<link rel="stylesheet" href="../ftab/ftab_green.css">
+<script type="text/javascript" src="../ftab/ftab.js"></script>
+<script type="text/javascript" src="uuhedt.js"></script>
+<script>
+function initUUHEdts(){
+//must call this after onload of document(then uuhedt.js is loaded.).
+
+//for user's lang,here give a sample
+//it is good to copy from UUHEdtLangEN,then you not need to set all lang.
+var UUHEdtLangJA = new UUHEdtLangEN.constructor();
+UUHEdtLangJA.name = 'JA';
+UUHEdtLangJA.SHelp = 'Online Help(JA)';
+UUHEdtLangJA.SAbout = 'About uuHEdt(JA)';
+UUHEdts.addLang(UUHEdtLangJA.name, UUHEdtLangJA);
+
+var UUHEdtLangCN = new UUHEdtLangEN.constructor();
+UUHEdtLangCN.name = 'CN';
+UUHEdtLangCN.SHelp = 'Online Help(CN)';
+UUHEdtLangCN.SAbout = 'About uuHEdt(CN)';
+UUHEdts.addLang(UUHEdtLangCN.name, UUHEdtLangCN);
+
+//set default lang. and the default is auto. must set this before any of new Editor or UUHEdts.getEditor().
+UUHEdts.setDefLang('auto');
+
+//user's event(here is only as sample)
+//UUHEdts.userSelectedChanged = function(editorobj, pluginobj, btnobj, btnid, selValue) {
+//}
+
+//also other's user event
+//UUHEdts.userInitLang = function(id, pluginobj, btnobj) {
+//  //should return id'lang
+//}
+//UUHEdts.userSavingContent = function(html) {
+//  //must return processed html
+//  return html;
+//}
+UUHEdts.userButtonClick = function(editorobj, pluginobj, btnobj, btnid, subid) {
+  document.title = 'You clicked:' + btnid + '(only as sample of user event)';
+  //return -1; //if return -1 then do nothing for this.
+}
+//UUHEdts.userSelectedChanged = function(editorobj, pluginobj, btnobj, btnid, selValue) {
+//}
+//UUHEdts.userPopClick = function(editorobj, pluginobj, btnobj, btnid, subid) {
+//}
+//UUHEdts.userCloseWin = function(editorobj) {
+//}
+
+//here show you how to use of self's smiles.
+UUHEdtSmile.path = 'smile/';
+UUHEdtSmile.smiles = [1,2,3,4,5];
+UUHEdtSmile.buttons = {
+    'smile' : {name : 'Smile Face', iconFile : 'smile/5.gif'}
+  };
+
+
+}
+
+function init(){
+  initUUHEdts();
+  //new UUHEdt use UUHEdts.getEditor(id, option), the 'option' is only valid for first time,
+  //after created, next only need id to access UUHEdt
+  //buttons: array list, item of '-' for new line, '|' for break. null for all buttons with the index of defined.
+  var edt = UUHEdts.getEditor('editor');
+  var o = document.getElementById('edit1');
+  edt.setContent(o.value);
+
+
+  //second editor,also define the height of editor(not include toolbar)
+  var edt2 = UUHEdts.getEditor('editor2', {buttons : ['fontsize','bold','italic','underline','bgcolor','forecolor','left','center','right','justify','ol','ul','strikethrough','removeformat','hr','link','unlink','image','table','smile','html','preview'],
+                                   imageList : null,
+                                   panel : null,
+                                   height : '150px'
+                                 }
+                      );
+  var o = document.getElementById('edit2');
+  edt2.setContent(o.value);
+}
+
+function getHtml(){
+  var o = document.getElementById('edit1');
+  var edt = UUHEdts.getEditor('editor');
+  o.value = edt.getContent();
+}
+function setHtml(){
+  var o = document.getElementById('edit1');
+  var edt = UUHEdts.getEditor('editor');
+  edt.setContent(o.value);
+}
+function pHtml(){
+  var o = document.getElementById('edit1');
+  var edt = UUHEdts.getEditor('editor');
+  edt.pasteHTML(o.value);
+}
+function gHtml(){
+  var o = document.getElementById('edit1');
+  var edt = UUHEdts.getEditor('editor');
+  o.value = edt.getSelHtml();
+}
+function gText(){
+  var o = document.getElementById('edit1');
+  var edt = UUHEdts.getEditor('editor');
+  o.value = edt.getSelText();
+}
+function selectedLang(obj){
+  UUHEdts.setDefLang(obj.value);
+  var edt = UUHEdts.getEditor('editor');
+  edt.setPanel();
+  alert('here is only as a sample. notice the tips of help button. current lang:'+obj.value);
+}
+
+
+function getHtml2(){
+  var o = document.getElementById('edit2');
+  var edt = UUHEdts.getEditor('editor2');
+  o.value = edt.getContent();
+}
+</script>
+</head>
+<body onload="init();">
+sample for uuHEdt(uu Html Edit),used of FTab(<font color="red">Floating Tabs</font>). another:<a href="uuhedt.html">sample(uuhedt.html)</a><br>
+  <form id="MAINFORM" name="MAINFORM" onsubmit="return false;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" height="60%">
+  <tr>
+    <td width="100%" height="80%">
+  <table border="0" cellpadding="0" cellspacing="0" style="width:100%;height:100%;">
+    <tr><td><div id="editor" style="width:100%;height:100%;"></div></td></tr>
+  </table>
+    </td>
+  </tr>
+  <tr>
+    <td id="editorParent1">
+       <input TYPE="button" VALUE="Get Html" STYLE="width:100px" onclick="getHtml();">&nbsp;
+       <input TYPE="button" VALUE="Set Html" STYLE="width:100px" onclick="setHtml();">&nbsp;
+       <input TYPE="button" VALUE="Paste Html" STYLE="width:90px" onclick="pHtml();">&nbsp;
+       <input TYPE="button" VALUE="Get SelText" STYLE="width:90px" onclick="gText();">&nbsp;
+       <input TYPE="button" VALUE="Get SelHtml" STYLE="width:90px" onclick="gHtml();">&nbsp;
+       Lang:<select onchange="selectedLang(this);">
+          <option value="auto">Auto</option>
+          <option value="en">English</option>
+          <option value="ja">Japanese</option>
+          <option value="cn">Chinese</option>
+       </select>
+       <textarea id="edit1" style="height:60px;width:80%;">some html for edit1.<br><i>sample text.</i></textarea><br>
+    </td>
+  </tr>
+  </table>
+  <br>
+    <!-- height will be set at init editor -->
+    <div id="editor2" style="width:70%;"></div>
+    <input TYPE="button" VALUE="Get Html" STYLE="width:100px" onclick="getHtml2();">&nbsp;
+    <br>
+    <textarea id="edit2" style="height:40px;width:80%;">some html for edit2.</textarea><br>
+  </form>
+</body>
+</html>
